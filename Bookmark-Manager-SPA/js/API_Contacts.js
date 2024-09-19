@@ -1,5 +1,5 @@
 //const API_URL = "http://localhost:5000/api/contacts";
-const API_URL = "http://localhost:5000/api/bookmarks";
+const API_URL = "https://api-bookmark-xavier.glitch.me/api/bookmarks";
 function API_GetContacts() {
     return new Promise(resolve => {
         $.ajax({

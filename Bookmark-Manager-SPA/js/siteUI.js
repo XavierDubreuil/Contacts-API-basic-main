@@ -6,7 +6,7 @@ function Init_UI() {
 
     renderBookmarks();
     //renderContacts();
-    $('#createContact').on("click", async function () {
+    $('#createBookmark').on("click", async function () {
         saveContentScrollPosition();
         renderCreateBookmarkForm();
         //renderCreateContactForm();
@@ -23,7 +23,7 @@ function Init_UI() {
 function renderAbout() {
     saveContentScrollPosition();
     eraseContent();
-    $("#createContact").hide();
+    $("#createBookmark").hide();
     $("#abort").show();
     $("#actionTitle").text("À propos...");
     $("#content").append(
@@ -44,11 +44,10 @@ function renderAbout() {
             </div>
         `))
 }
-
-async function renderContacts() {
+/*async function renderContacts() {
     showWaitingGif();
     $("#actionTitle").text("Liste des contacts");
-    $("#createContact").show();
+    $("#createBookmark").show();
     $("#abort").hide();
     let contacts = await API_GetContacts();
     eraseContent();
@@ -70,11 +69,11 @@ async function renderContacts() {
     } else {
         renderError("Service introuvable");
     }
-}
+}*/
 async function renderBookmarks(category = null) {
     showWaitingGif();
     $("#actionTitle").text("Liste des favories");
-    $("#createContact").show();
+    $("#createBookmark").show();
     $("#abort").hide();
     let bookmarks = await API_GetBookmarks();
     eraseContent();
@@ -109,8 +108,7 @@ async function renderBookmarks(category = null) {
         renderError("Service introuvable");
     }
 }
-/*
-async function renderBookmarks() {
+/*async function renderBookmarks() {
     showWaitingGif();
     $("#actionTitle").text("Liste des favories");
     $("#createContact").show();
@@ -136,8 +134,7 @@ async function renderBookmarks() {
     } else {
         renderError("Service introuvable");
     }
-}
-    */
+}*/
 function showWaitingGif() {
     $("#content").empty();
     $("#content").append($("<div class='waitingGifcontainer'><img class='waitingGif' src='Loading_icon.gif' /></div>'"));
@@ -164,9 +161,9 @@ function renderError(message) {
 function renderCreateBookmarkForm() {
     renderBookMarkForm();
 }
-function renderCreateContactForm() {
+/*function renderCreateContactForm() {
     renderContactForm();
-}
+}*/
 async function renderEditBookmarkForm(id) {
     showWaitingGif();
     let bookmark = await API_GetBookmark(id);
@@ -175,17 +172,17 @@ async function renderEditBookmarkForm(id) {
     else
         renderError("Bookmark introuvable!");
 }
-async function renderEditContactForm(id) {
+/*async function renderEditContactForm(id) {
     showWaitingGif();
     let contact = await API_GetContact(id);
     if (contact !== null)
         renderContactForm(contact);
     else
         renderError("Contact introuvable!");
-}
+}*/
 async function renderDeleteBookmarkForm(id) {
     showWaitingGif();
-    $("#createContact").hide();
+    $("#createBookmark").hide();
     $("#abort").show();
     $("#actionTitle").text("Retrait");
     let bookmark = await API_GetBookmark(id);
@@ -224,9 +221,9 @@ async function renderDeleteBookmarkForm(id) {
         renderError("bookmark introuvable!");
     }
 };
-async function renderDeleteContactForm(id) {
+/*async function renderDeleteContactForm(id) {
     showWaitingGif();
-    $("#createContact").hide();
+    $("#createBookmark").hide();
     $("#abort").show();
     $("#actionTitle").text("Retrait");
     let contact = await API_GetContact(id);
@@ -264,15 +261,15 @@ async function renderDeleteContactForm(id) {
     } else {
         renderError("Contact introuvable!");
     }
-}
-function newContact() {
+}*/
+/*function newContact() {
     contact = {};
     contact.Id = 0;
     contact.Name = "";
     contact.Phone = "";
     contact.Email = "";
     return contact;
-}
+}*/
 function newBookMark() {
     bookmark = {};
     bookmark.Id = 0;
@@ -282,7 +279,7 @@ function newBookMark() {
     return bookmark;
 }
 function renderBookMarkForm(bookmark = null) {
-    $("#createContact").hide();
+    $("#createBookmark").hide();
     $("#abort").show();
     eraseContent();
     let create = bookmark == null;
@@ -307,7 +304,7 @@ function renderBookMarkForm(bookmark = null) {
         
         <form class="form" id="contactForm">
             <input type="hidden" name="Id" value="${bookmark.Id}"/>
-            <img src="${logo}" alt="Logo du site" width="64" height="64">
+            <img id="logo${bookmark.Id}" src="${logo}" alt="Logo du site" width="64" height="64">
             <br>
             <label for="Name" class="form-label">Titre </label>
             <input 
@@ -327,6 +324,7 @@ function renderBookMarkForm(bookmark = null) {
                 id="Phone"
                 placeholder="http(s)//google.com"
                 required
+                oninput="changeLogoSite(${bookmark.Id})"
                 RequireMessage="Veuillez entrer un url" 
                 InvalidMessage="Veuillez entrer un url valide"
                 value="${bookmark.Url}" 
@@ -363,8 +361,13 @@ function renderBookMarkForm(bookmark = null) {
         renderBookmarks();
     });
 }
-function renderContactForm(contact = null) {
-    $("#createContact").hide();
+function changeLogoSite(id) {
+    let url = document.getElementById('Phone').value;
+    let logoEmplacement = document.getElementById('logo'+id);
+    logoEmplacement.src = `https://www.google.com/s2/favicons?sz=64&domain=`+url;
+}
+/*function renderContactForm(contact = null) {
+    $("#createBookmark").hide();
     $("#abort").show();
     eraseContent();
     let create = contact == null;
@@ -428,7 +431,7 @@ function renderContactForm(contact = null) {
         renderContacts();
     });
 }
-
+*/
 function getFormData($form) {
     const removeTag = new RegExp("(<[a-zA-Z0-9]+>)|(</[a-zA-Z0-9]+>)", "g");
     var jsonObject = {};
@@ -438,7 +441,7 @@ function getFormData($form) {
     return jsonObject;
 }
 
-function renderContact(contact) {
+/*function renderContact(contact) {
     return $(`
      <div class="contactRow" contact_id=${contact.Id}">
         <div class="contactContainer noselect">
@@ -454,14 +457,14 @@ function renderContact(contact) {
         </div>
     </div>           
     `);
-}
+}*/
 
 function renderBookmark(bookmark) {
     return $(`
         <div class="contactRow" contact_id=${bookmark.Id}">
            <div class="contactContainer noselect">
                <div class="contactLayout">
-                   <img src="https://www.google.com/s2/favicons?sz=64&domain=${bookmark.Url}" alt="Logo du site" width="64" height="64">
+                   <img id="logo${bookmark.Id}" src="https://www.google.com/s2/favicons?sz=64&domain=${bookmark.Url}" alt="Logo du site" width="64" height="64">
                    <span class="contactName">${bookmark.Title}</span>
                    <span class="contactEmail">${bookmark.Category}</span>
                </div>
